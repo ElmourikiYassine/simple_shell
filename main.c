@@ -12,7 +12,7 @@ int main(int argc, char **argv, char **env)
 	char *line = NULL;
 	size_t len = 0;
 	ssize_t nread;
-	char **tokens = (char **) malloc(sizeof(char *) * 90);
+	char **tokens = (char **)malloc(sizeof(char *) * 90);
 	int token_count = 0;
 	int executable_is_found = 0;
 	(void)argc;
@@ -22,20 +22,22 @@ int main(int argc, char **argv, char **env)
 	{
 		if (nread > 0 && line[nread - 1] == '\n')
 			/* Remove the newline character */
-			line[nread - 1] = '\0'; 
+			line[nread - 1] = '\0';
+
+		if (handle_exit_command(line))
+		{
+			free(line);
+			exit(0);
+		}
 
 		tokens = process_input(line, tokens,
 				&token_count, env, &executable_is_found);
-
 		execute_command(tokens, argv);
 
 		printf("$ ");
-
 	}
-
 
 	free(line);
 	free(tokens);
 	return (0);
 }
-
