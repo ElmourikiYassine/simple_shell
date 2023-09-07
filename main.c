@@ -7,13 +7,14 @@
  *
  * Return: Always 0
  */
-int main(int argc, char **argv)
+int main(int argc, char **argv, char **env)
 {
 	char *line = NULL;
 	size_t len = 0;
 	ssize_t nread;
 	char **tokens = (char **) malloc(sizeof(char *) * 90);
 	int token_count = 0;
+	int executable_is_found = 0;
 	(void)argc;
 
 	printf("$ ");
@@ -23,7 +24,9 @@ int main(int argc, char **argv)
 			/* Remove the newline character */
 			line[nread - 1] = '\0'; 
 
-		tokens = process_input(line, tokens, &token_count);
+		tokens = process_input(line, tokens,
+				&token_count, env, &executable_is_found);
+
 		execute_command(tokens, argv);
 
 		printf("$ ");

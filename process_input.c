@@ -8,13 +8,15 @@
  *
  * Return: The tokens.
  */
-char **process_input(char *line, char **tokens, int *token_count)
+char **process_input(char *line, char **tokens,
+		int *token_count, char **env, int *executable_is_found)
 {
 	char *token;
 
 	token = strtok(line, " ");
 	*token_count = 0;
 
+	*executable_is_found = find_executable(env);
 	while (token != NULL)
 	{
 		tokens[*token_count] = token;
