@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <sys/wait.h>
 
-void execute_command(char *tokens[]);
-void process_input(char *line);
+char **process_input(char *line, char **tokens, int *token_count);
+void execute_command(char *tokens[], char **argv);
 
 #endif

@@ -1,23 +1,28 @@
 #include "main.h"
+
 /**
  * process_input - process and execute user input
  * @line: The user input line to processed
- * Return: Void
+ * @tokens: An array of tokens provided by the user , the delimiter is " ".
+ * @token_count: The number of elements in the tokens array.
+ *
+ * Return: The tokens.
  */
-void process_input(char *line)
+char **process_input(char *line, char **tokens, int *token_count)
 {
-		char *tokens[64];
-		char *token;
-		int token_count;
+	char *token;
 
-		token = strtok(line, " ");
+	token = strtok(line, " ");
+	*token_count = 0;
 
-		while (token != NULL)
-		{
-		tokens[token_count++] = token;
+	while (token != NULL)
+	{
+		tokens[*token_count] = token;
+		*token_count = *token_count + 1;
 		token = strtok(NULL, " ");
-		}
+	}
 
-		tokens[token_count] = NULL;
-		execute_command(tokens);
+	tokens[*token_count] = NULL;
+	return (tokens);
 }
+

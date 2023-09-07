@@ -1,10 +1,14 @@
 #include "main.h"
+
 /**
  * execute_command - execute a command with its arguments
  * @tokens: An array of string representing the command
+ * @argv: The arguments passed with in the main function
+ * so we can match the output demanded.
+ *
  * Return: Void
  */
-void execute_command(char *tokens[])
+void execute_command(char *tokens[], char **argv)
 {
 	int wstatus, exit_status;
 	pid_t child_pid;
@@ -21,7 +25,7 @@ void execute_command(char *tokens[])
 		/* Child process */
 		if (execve(tokens[0], tokens, NULL) == -1)
 		{
-			perror("Error: ");
+			perror(argv[0]);
 			exit(1);
 		}
 	}
@@ -36,3 +40,4 @@ void execute_command(char *tokens[])
 		}
 	}
 }
+

@@ -1,29 +1,38 @@
 #include "main.h"
+
 /**
  * main - Entry point of the program
  * @argc: The number of command-line arguments
  * @argv: An array containing the command-line arguments
+ *
  * Return: Always 0
  */
-
 int main(int argc, char **argv)
 {
 	char *line = NULL;
 	size_t len = 0;
 	ssize_t nread;
+	char **tokens = (char **) malloc(sizeof(char *) * 90);
+	int token_count = 0;
 	(void)argc;
-	(void)argv;
 
 	printf("$ ");
 	while ((nread = getline(&line, &len, stdin)) != -1)
 	{
 		if (nread > 0 && line[nread - 1] == '\n')
-			line[nread - 1] = '\0'; /* Remove the newline character */
+			/* Remove the newline character */
+			line[nread - 1] = '\0'; 
 
-		process_input(line);
+		tokens = process_input(line, tokens, &token_count);
+		execute_command(tokens, argv);
+
 		printf("$ ");
+
 	}
 
+
 	free(line);
+	free(tokens);
 	return (0);
 }
+
