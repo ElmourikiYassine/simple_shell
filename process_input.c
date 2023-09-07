@@ -9,22 +9,35 @@
  * Return: The tokens.
  */
 char **process_input(char *line, char **tokens,
-		int *token_count, char **env, int *executable_is_found)
+		int *token_count, char **env,
+		int *executable_is_found,
+		char *exe_path_name)
 {
 	char *token;
+	char *executable_name;
 
-	token = strtok(line, " ");
 	*token_count = 0;
 
-	*executable_is_found = find_executable(env);
+	executable_name = strtok(line, " ");
+	token = executable_name;
+
 	while (token != NULL)
 	{
-		tokens[*token_count] = token;
-		*token_count = *token_count + 1;
+		tokens[*token_count] = strdup(token);
+		(*token_count)++;
 		token = strtok(NULL, " ");
 	}
-
 	tokens[*token_count] = NULL;
+
+	/* the only reason this func is called here is we need strtok()  call
+	 * and this is the place we do that
+	 * */
+
+	    if (*token_count > 0)
+	    {
+		*executable_is_found = find_executable(env, executable_name, exe_path_name);
+	    }
+
 	return (tokens);
 }
 
