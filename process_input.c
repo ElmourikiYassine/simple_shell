@@ -1,25 +1,22 @@
 #include "main.h"
 
 /**
- * process_input - process and execute user input
- * @line: The user input line to processed
- * @tokens: An array of tokens provided by the user , the delimiter is " ".
- * @token_count: The number of elements in the tokens array.
+ * process_input - Process and execute user input
+ * @line: The user input line to be processed
+ * @token_count: A pointer to an integer that will hold the number of tokens
+ * @exe_name: A buffer to store the executable name
  *
- * Return: The tokens.
+ * Return: (char **) An array of tokens.
  */
-char **process_input(char *line, char **tokens,
-		int *token_count, char **env,
-		int *executable_is_found,
-		char *exe_path_name)
+
+char **process_input(char *line, int *token_count, char *exe_name)
 {
 	char *token;
-	char *executable_name;
+	char **tokens = (char **)malloc(sizeof(char *) * SIZE_TOKEN);
 
 	*token_count = 0;
-
-	executable_name = strtok(line, " ");
-	token = executable_name;
+	strcpy(exe_name, strtok(line, " "));
+	token = exe_name;
 
 	while (token != NULL)
 	{
@@ -28,15 +25,6 @@ char **process_input(char *line, char **tokens,
 		token = strtok(NULL, " ");
 	}
 	tokens[*token_count] = NULL;
-
-	/* the only reason this func is called here is we need strtok()  call
-	 * and this is the place we do that
-	 * */
-
-	    if (*token_count > 0)
-	    {
-		*executable_is_found = find_executable(env, executable_name, exe_path_name);
-	    }
 
 	return (tokens);
 }

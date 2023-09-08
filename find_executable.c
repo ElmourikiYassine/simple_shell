@@ -1,51 +1,73 @@
 #include "main.h"
 
-int find_executable(char **env, char *exe, char *exe_path_name)
+/**
+ * find_executable - Find the full path
+ * of an executable in the PATH environment
+ * @env: The environment variables
+ * @file_path: The name of the executable file
+ * @exe_name: The name of the executable
+ *
+ * Return: (char *) The full path of the executable if found, NULL otherwise
+ */
+char *find_executable(char **env, char *file_path, char *exe_name)
 {
-    int i = 0;
-    char *path_unparsed = NULL;
-    char *path_parsed = NULL;
-    char path_parsed_cat[1024];
-    struct stat file_stat;
+	char *exe_path;
+	char *paths;
+	char *path_parsed;
+	char path_parsed_cat[SIZE_PATH];
+	char *paths_copy;
+	struct stat file_stat;
 
+	if (stat(file_path, &file_stat) == 0)
+		return (file_path);
 
-    while (env[i] != NULL) {
-        if (strcmp(strtok(env[i], "="), "PATH") == 0)
-            break;
+	exe_path = (char *)malloc(sizeof(char) * SIZE_PATH);
+	paths = get_PATH(env);
 
-        i++;
-    }
+	paths_copy = strdup(paths);
+	path_parsed = strtok(paths_copy, ":");
 
-    path_unparsed = strtok(NULL, "=");
-
-    /* the path_unparsed looks like this :
-     * /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-     *
-     * we need to parse it again
-     **/
-
-    path_parsed = strtok(path_unparsed, ":");
-
-    while (path_parsed != NULL)
+	while (path_parsed != NULL)
 	{
-	    strcpy(path_parsed_cat, path_parsed);
-	    strcat(path_parsed_cat, "/");
-	    strcat(path_parsed_cat, exe);
+		strcpy(path_parsed_cat, path_parsed);
+		strcat(path_parsed_cat, "/");
+		strcat(path_parsed_cat, exe_name);
 
-	    printf("Checking path: %s\n", path_parsed_cat);
+		if (stat(path_parsed_cat, &file_stat) == 0)
+		{
+			strcpy(exe_path, path_parsed_cat);
+			free(paths_copy);
+			return (exe_path);
+		}
 
-	    if (stat(path_parsed_cat, &file_stat) == 0)
-	    {
-		strcpy(exe_path_name, path_parsed_cat);
-		printf("Executable path found: %s\n", exe_path_name);
-		return (1);
-	    }
-
-	    path_parsed = strtok(NULL, ":");
+		path_parsed = strtok(NULL, ":");
 	}
 
-	printf("I'm here outside\n");
+	free(paths_copy);
+	return (NULL);
+}
 
-	return (0);
+/**
+ * get_PATH - Get the value of the PATH environment variable
+ * @env: The environment variables
+ *
+ * Return: (char *) The value of the PATH variable if found, NULL otherwise
+ */
+char *get_PATH(char **env)
+{
+	int i = 0;
+
+	while (env[i] != NULL)
+	{
+		char *envVar = env[i];
+
+		if (strstr(envVar, "PATH=") == envVar)
+		{
+			return (envVar + 5);
+		}
+		i++;
+	}
+
+	return (NULL);
 }
 
