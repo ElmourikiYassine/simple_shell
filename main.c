@@ -59,10 +59,6 @@ int main(int argc, char **argv, char **env)
                         line[nread - 1] = '\0';
                 }
 
-                if (handle_exit_command(line))
-                {
-                        break;
-                }
 
                 memset(exe_name, 0, strlen(exe_name));
                 tokens = process_input(line, &token_count, exe_name);

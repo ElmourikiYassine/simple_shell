@@ -39,6 +39,7 @@ char **process_input(char *line, int *token_count, char *exe_name)
         char *rest = line;
         int in_quotes = 0; /* 0 for no quotes, 1 for single quotes, 2 for double quotes */
         char *end_quote;
+	int is_built_in_command = 0;
 
         *token_count = 0;
         while ((token = strtok(rest, " \t\n\r")) != NULL)
@@ -94,5 +95,36 @@ char **process_input(char *line, int *token_count, char *exe_name)
                 strcpy(exe_name, tokens[0]);
         }
 
-        return (tokens);
+	is_built_in_command = handle_build_in_commmand(tokens);
+
+	if (is_built_in_command)
+		return (NULL);
+	else 
+		return (tokens);
+
 }
+
+int handle_build_in_commmand(char **tokens)
+{
+	char *name_built_in = tokens[0];
+	int i = 0;
+	built_in_cmd cmds[] = {
+		{ "exit", handle_exit_command },
+		{NULL, NULL}
+	};
+
+	if (tokens == NULL || tokens[0] == NULL)
+		return 0;
+
+	while (cmds[i].func != NULL)
+	{
+		if (strcmp(name_built_in, cmds[i].name) == 0)
+		{
+			cmds[i].func(tokens);
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+

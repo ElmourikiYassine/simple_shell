@@ -13,9 +13,17 @@
 #define SIZE_LINE 1024
 #define SIZE_PATH 1024
 
+typedef struct built_in_cmd
+{
+	char *name;
+	int (*func)(char **tokens);
+
+} built_in_cmd;
+
 char **process_input(char *line, int *token_count, char *exe_name);
 void execute_command(char *exe_path, char **tokens, char *shell_name);
-int handle_exit_command(char *line);
+int handle_build_in_commmand(char **tokens);
+int handle_exit_command(char **tokens);
 char *get_PATH(char **env);
 char *find_executable(char **env, char *file_path, char *exe_name);
 void free_state(char **tokens, char *exe_path);
