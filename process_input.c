@@ -3,41 +3,62 @@
 /**
  * process_input - process and execute user input
  * @line: The user input line to processed
- * @tokens: An array of tokens provided by the user , the delimiter is " ".
  * @token_count: The number of elements in the tokens array.
- *
+ * @exe_name: <-- TODO -->
  * Return: The tokens.
  */
-char **process_input(char *line, char **tokens,
-		int *token_count, char **env,
-		int *executable_is_found,
-		char *exe_path_name)
-{
-	char *token;
-	char *executable_name;
 
+char **process_input(char *line, int *token_count, char *exe_name)
+{
+	char **tokens = (char **)malloc(sizeof(char *) * SIZE_TOKEN);
+	char *token, *rest = line, *end_quote;
+	int in_quotes = 0;
 	*token_count = 0;
 
-	executable_name = strtok(line, " ");
-	token = executable_name;
-
-	while (token != NULL)
+	while ((token = strtok(rest, " \t\n\r")) != NULL)
 	{
-		tokens[*token_count] = strdup(token);
-		(*token_count)++;
-		token = strtok(NULL, " ");
+		rest = NULL;
+		if (token[0] == '\'' || token[0] == '"')
+		{
+			in_quotes = (token[0] == '\'') ? 1 : 2;
+			token++;
+			end_quote = strchr(token, (in_quotes == 1) ? '\'' : '"');
+
+			if (end_quote != NULL)
+			{
+				*end_quote = '\0';
+				tokens[*token_count] = strdup(token);
+				(*token_count)++;
+				in_quotes = 0;
+			}
+			else
+			{
+				tokens[*token_count] = strdup(token);
+				(*token_count)++;
+			}
+		}
+		else
+		{
+			if (in_quotes)
+			{
+				end_quote = strchr(token, (in_quotes == 1) ? '\'' : '"');
+				if (end_quote != NULL)
+					*end_quote = '\0';
+
+				strcat(tokens[*token_count - 1], " ");
+				strcat(tokens[*token_count - 1], token);
+			}
+			else
+			{
+				tokens[*token_count] = strdup(token);
+				(*token_count)++;
+			}
+		}
 	}
 	tokens[*token_count] = NULL;
 
-	/* the only reason this func is called here is we need strtok()  call
-	 * and this is the place we do that
-	 * */
-
-	    if (*token_count > 0)
-	    {
-		*executable_is_found = find_executable(env, executable_name, exe_path_name);
-	    }
+	if (*token_count > 0)
+		strcpy(exe_name, tokens[0]);
 
 	return (tokens);
 }
-
