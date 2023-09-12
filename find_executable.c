@@ -70,4 +70,3 @@ char *get_PATH(char **env)
 
 	return (NULL);
 }
-
