@@ -1,8 +1,8 @@
 #include "main.h"
 /**
  * handle_exit_command - handle exit command
- * @line: the user input
- * Return: return 1 if command was exit otherwise return 0
+ * @tokens: An array of strings of command tokens
+ * Return: always return 0
 */
 int handle_exit_command(char **tokens)
 {

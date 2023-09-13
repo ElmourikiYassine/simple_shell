@@ -13,6 +13,13 @@
 #define SIZE_LINE 1024
 #define SIZE_PATH 1024
 
+extern char **environ;
+
+/**
+ * struct built_in_cmd - Represent a built-in command and handler func.
+ * @name: the name of the built-in command.
+ * @func: A pointer to the func that handles the command.
+*/
 typedef struct built_in_cmd
 {
 	char *name;
