@@ -4,7 +4,7 @@
  * @tokens: Array of command tokens.
  * Return: 1 if a built-in command was execute, 0 otherwise.
 */
-int handle_build_in_commmand(char **tokens)
+int handle_build_in_commmand(char **tokens,  int *exit_status, int cycle_count, char **argv)
 {
 	char *name_built_in = tokens[0];
 	int i = 0;
@@ -21,7 +21,7 @@ int handle_build_in_commmand(char **tokens)
 	{
 		if (strcmp(name_built_in, cmds[i].name) == 0)
 		{
-			cmds[i].func(tokens);
+			cmds[i].func(tokens, exit_status, cycle_count, argv);
 			return (1);
 		}
 		i++;

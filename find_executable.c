@@ -18,31 +18,33 @@ char *find_executable(char **env, char *file_path, char *exe_name)
 	char *paths_copy;
 	struct stat file_stat;
 
-	if (stat(file_path, &file_stat) == 0)
-		return (file_path);
-
 	exe_path = (char *)malloc(sizeof(char) * SIZE_PATH);
 	paths = get_PATH(env);
 
-	paths_copy = strdup(paths);
-	path_parsed = strtok(paths_copy, ":");
+	if (stat(file_path, &file_stat) == 0)
+		return (file_path);
 
-	while (path_parsed != NULL)
+	else if (paths != NULL)
 	{
-		strcpy(path_parsed_cat, path_parsed);
-		strcat(path_parsed_cat, "/");
-		strcat(path_parsed_cat, exe_name);
+		paths_copy = strdup(paths);
+		path_parsed = strtok(paths_copy, ":");
 
-		if (stat(path_parsed_cat, &file_stat) == 0)
+		while (path_parsed != NULL)
 		{
-			strcpy(exe_path, path_parsed_cat);
-			free(paths_copy);
-			return (exe_path);
+			strcpy(path_parsed_cat, path_parsed);
+			strcat(path_parsed_cat, "/");
+			strcat(path_parsed_cat, exe_name);
+
+			if (stat(path_parsed_cat, &file_stat) == 0)
+			{
+				strcpy(exe_path, path_parsed_cat);
+				free(paths_copy);
+				return (exe_path);
+			}
+
+			path_parsed = strtok(NULL, ":");
 		}
-
-		path_parsed = strtok(NULL, ":");
 	}
-
 	free(paths_copy);
 	return (NULL);
 }
@@ -67,6 +69,5 @@ char *get_PATH(char **env)
 		}
 		i++;
 	}
-
 	return (NULL);
 }

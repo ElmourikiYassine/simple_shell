@@ -8,10 +8,9 @@
  *
  * Return: void
  */
-
-void execute_command(char *exe_path,char **env, char **tokens, char *shell_name)
+int execute_command(char *exe_path,char **env, char **tokens, char *shell_name)
 {
-	int wstatus, exit_status;
+	int wstatus;
 	pid_t child_pid;
 
 	child_pid = fork();
@@ -19,26 +18,30 @@ void execute_command(char *exe_path,char **env, char **tokens, char *shell_name)
 	if (child_pid == -1)
 	{
 		perror("Fork error");
-		exit(1);
+		exit(errno);
 	}
 	else if (child_pid == 0)
 	{
+		
+		child_pid = getpid();
 		/* Child process */
 		if (execve(exe_path, tokens, env) == -1)
 		{
 			perror(shell_name);
-			exit(1);
+			_exit(errno);
 		}
 	}
 	else
 	{
 		/* Parent process */
-		wait(&wstatus);
+		waitpid(child_pid, &wstatus, WCONTINUED);
 		if (WIFEXITED(wstatus))
 		{
-			exit_status = WEXITSTATUS(wstatus);
-			(void)exit_status;
+			return  WEXITSTATUS(wstatus);
 		}
+		else
+			return (errno);
 	}
+	return (0);
 }
 

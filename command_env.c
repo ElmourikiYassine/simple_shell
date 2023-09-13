@@ -4,15 +4,20 @@
  * @env: Pointer of the enviroment variables.
  * Return: Always return 1
 */
-int handle_env_command(char **env)
+extern char **environ;
+
+int handle_env_command(char **tokens, int *exit_status, int cycle_count, char **argv)
 {
 	int i = 0;
+	(void) tokens;
+	(void) exit_status;
+	(void) cycle_count;
+	(void) argv;
 
-	env = environ;
-	while (env[i])
+	while (environ[i])
 	{
-		printf("%s\n", env[i]);
+		printf("%s\n", environ[i]);
 		i++;
 	}
-	return (1);
+	return (0);
 }

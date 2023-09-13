@@ -8,6 +8,7 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <signal.h>
+#include <errno.h>
 
 #define SIZE_TOKEN 90
 #define SIZE_LINE 1024
@@ -23,15 +24,15 @@ extern char **environ;
 typedef struct built_in_cmd
 {
 	char *name;
-	int (*func)(char **tokens);
+	int (*func)(char **tokens, int *exit_status, int cycle_count, char **argv);
 
 } built_in_cmd;
 
-char **process_input(char *line, int *token_count, char *exe_name);
-void execute_command(char *exe_path,char **env, char **tokens, char *shell_name);
-int handle_build_in_commmand(char **tokens);
-int handle_exit_command(char **tokens);
-int handle_env_command(char **tokens);
+char **process_input(char *line, int *token_count, char *exe_name, int *exit_status, int cycle_count, char **argv);
+int execute_command(char *exe_path,char **env, char **tokens, char *shell_name);
+int handle_build_in_commmand(char **tokens, int *exit_status, int cycle_count, char **argv);
+int handle_exit_command(char **tokens, int *exit_status, int cycle_count, char **argv);
+int handle_env_command(char **tokens, int *exit_status, int cycle_count, char **argv);
 char *get_PATH(char **env);
 char *find_executable(char **env, char *file_path, char *exe_name);
 void free_state(char **tokens, char *exe_path);
