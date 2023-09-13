@@ -53,7 +53,7 @@ void split_input_line(char **env, char **argv,
 	{
 		exe_path = find_executable(env, tokens[0], exe_name);
 		if (exe_path)
-			execute_command(exe_path, tokens, argv[0]);
+			execute_command(exe_path, env, tokens, argv[0]);
 		else
 		{
 			fprintf(stderr, "%s: %d: %s: not found\n", argv[0], cycle_count, tokens[0]);
@@ -95,12 +95,8 @@ void handle_user_input(char **env, char **argv)
 			fflush(stdout);
 		}
 	}
-
-	printf("\n");
-	fflush(stdout);
 	free(line);
 }
-
 
 /**
  * main -Entry point of the program

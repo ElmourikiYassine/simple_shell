@@ -28,7 +28,7 @@ typedef struct built_in_cmd
 } built_in_cmd;
 
 char **process_input(char *line, int *token_count, char *exe_name);
-void execute_command(char *exe_path, char **tokens, char *shell_name);
+void execute_command(char *exe_path,char **env, char **tokens, char *shell_name);
 int handle_build_in_commmand(char **tokens);
 int handle_exit_command(char **tokens);
 int handle_env_command(char **tokens);

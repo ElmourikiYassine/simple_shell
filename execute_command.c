@@ -9,7 +9,7 @@
  * Return: void
  */
 
-void execute_command(char *exe_name, char **tokens, char *shell_name)
+void execute_command(char *exe_path,char **env, char **tokens, char *shell_name)
 {
 	int wstatus, exit_status;
 	pid_t child_pid;
@@ -24,7 +24,7 @@ void execute_command(char *exe_name, char **tokens, char *shell_name)
 	else if (child_pid == 0)
 	{
 		/* Child process */
-		if (execve(exe_name, tokens, NULL) == -1)
+		if (execve(exe_path, tokens, env) == -1)
 		{
 			perror(shell_name);
 			exit(1);
