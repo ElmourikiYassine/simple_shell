@@ -19,7 +19,7 @@ int handle_build_in_commmand(char **tokens)
 
 	while (cmds[i].func != NULL)
 	{
-		if (strcmp(name_built_in, cmds[i].name) == 0)
+		if (_strcmp(name_built_in, cmds[i].name) == 0)
 		{
 			cmds[i].func(tokens);
 			return (1);

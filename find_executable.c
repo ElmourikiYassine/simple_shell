@@ -29,13 +29,13 @@ char *find_executable(char **env, char *file_path, char *exe_name)
 
 	while (path_parsed != NULL)
 	{
-		strcpy(path_parsed_cat, path_parsed);
-		strcat(path_parsed_cat, "/");
-		strcat(path_parsed_cat, exe_name);
+		_strcpy(path_parsed_cat, path_parsed);
+		_strcat(path_parsed_cat, "/");
+		_strcat(path_parsed_cat, exe_name);
 
 		if (stat(path_parsed_cat, &file_stat) == 0)
 		{
-			strcpy(exe_path, path_parsed_cat);
+			_strcpy(exe_path, path_parsed_cat);
 			free(paths_copy);
 			return (exe_path);
 		}
@@ -61,7 +61,7 @@ char *get_PATH(char **env)
 	{
 		char *envVar = env[i];
 
-		if (strstr(envVar, "PATH=") == envVar)
+		if (_strstr(envVar, "PATH=") == envVar)
 		{
 			return (envVar + 5);
 		}

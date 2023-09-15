@@ -2,9 +2,7 @@
 
 /**
  * init_program - Function to handle program initialization
- *
  * Returns: Nothing
- *
  * Description: Performs any necessary initialization for the program,
  * such as setting up signal handlers.
  */

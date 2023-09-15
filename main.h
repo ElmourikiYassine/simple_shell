@@ -37,4 +37,14 @@ char *find_executable(char **env, char *file_path, char *exe_name);
 void free_state(char **tokens, char *exe_path);
 void signal_handler(int signum);
 
+int _strlen(char *s);
+char *_strcpy(char *dest, char *src);
+int _strcmp(char *s1, char *s2);
+char *_strstr(char *haystack, char *needle);
+char *_strchr(char *s, char c);
+char *_strcat(char *dest, char *src);
+char *_strdup(char *str);
+
+
+
 #endif

@@ -58,14 +58,14 @@ char **process_input(char *line, int *token_count, char *exe_name)
 			{
 				/* Terminate the quoted string */
 				*end_quote = '\0';
-				tokens[*token_count] = strdup(token);
+				tokens[*token_count] = _strdup(token);
 				(*token_count)++;
 				in_quotes = 0;
 			}
 			else
 			{
 				/* Unmatched quote, treat as a regular token */
-				tokens[*token_count] = strdup(token);
+				tokens[*token_count] = _strdup(token);
 				(*token_count)++;
 			}
 		}
@@ -75,11 +75,11 @@ char **process_input(char *line, int *token_count, char *exe_name)
 			if (in_quotes)
 			{
 				/* Append to the previous token if inside quotes */
-				end_quote = strchr(token, (in_quotes == 1) ? '\'' : '"');
+				end_quote = _strchr(token, (in_quotes == 1) ? '\'' : '"');
 				if (end_quote != NULL)
 					*end_quote = '\0';
-				strcat(tokens[*token_count - 1], " ");
-				strcat(tokens[*token_count - 1], token);
+				_strcat(tokens[*token_count - 1], " ");
+				_strcat(tokens[*token_count - 1], token);
 			}
 			else
 			{
