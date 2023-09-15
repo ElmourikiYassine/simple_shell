@@ -2,7 +2,8 @@
 
 /**
  * execute_command - Execute a command with its arguments
- * @exe_name: The full path to the executable
+ * @exe_path: The full path to the executable
+ * @env: <--TODO-->
  * @tokens: An array of strings representing the command and its arguments
  * @shell_name: The name of the shell program
  *

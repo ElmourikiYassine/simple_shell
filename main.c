@@ -2,9 +2,7 @@
 
 /**
  * init_program - Function to handle program initialization
- *
  * Returns: Nothing
- *
  * Description: Performs any necessary initialization for the program,
  * such as setting up signal handlers.
  */
@@ -39,8 +37,7 @@ void init_program(void)
  * Description: Splits an input line into tokens,
  * and executes the corresponding command.
  */
-void split_input_line(char **env, char **argv,
-		char *line, char *exe_name, int cycle_count, int *exit_status)
+void split_input_line(char **env, char **argv,char *line, char *exe_name, int cycle_count, int *exit_status)
 {
 	char **tokens;
 	int token_count;

@@ -11,20 +11,22 @@
  */
 char *find_executable(char **env, char *file_path, char *exe_name)
 {
-	char *exe_path;
-	char *paths;
-	char *path_parsed;
-	char path_parsed_cat[SIZE_PATH];
-	char *paths_copy;
-	struct stat file_stat;
+        char *exe_path;
+        char *paths;
+        char *path_parsed;
+        char path_parsed_cat[SIZE_PATH];
+        char *paths_copy;
+        struct stat file_stat;
 
-	exe_path = (char *)malloc(sizeof(char) * SIZE_PATH);
-	paths = get_PATH(env);
+        exe_path = (char *)malloc(sizeof(char) * SIZE_PATH);
+        paths = get_PATH(env);
 
-	if (stat(file_path, &file_stat) == 0)
-		return (file_path);
 
-	else if (paths != NULL)
+        if (stat(file_path, &file_stat) == 0)
+                return (file_path);
+
+
+	if (paths != NULL)
 	{
 		paths_copy = strdup(paths);
 		path_parsed = strtok(paths_copy, ":");
@@ -45,8 +47,8 @@ char *find_executable(char **env, char *file_path, char *exe_name)
 			path_parsed = strtok(NULL, ":");
 		}
 	}
-	free(paths_copy);
-	return (NULL);
+        free(paths_copy);
+        return (NULL);
 }
 
 /**
@@ -64,9 +66,7 @@ char *get_PATH(char **env)
 		char *envVar = env[i];
 
 		if (strstr(envVar, "PATH=") == envVar)
-		{
 			return (envVar + 5);
-		}
 		i++;
 	}
 	return (NULL);
