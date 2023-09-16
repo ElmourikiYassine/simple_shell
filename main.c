@@ -4,18 +4,11 @@
  * init_program - Function to handle program initialization
  * Returns: Nothing
  * Description: Performs any necessary initialization for the program,
- * such as setting up signal handlers.
+ *              such as setting up signal handlers.
  */
 void init_program(void)
 {
-	char *exe_path = (char *)malloc(SIZE_PATH + 1);
-
 	signal(SIGINT, signal_handler);
-	if (exe_path == NULL)
-	{
-		perror("Memory allocation failed");
-		exit(EXIT_FAILURE);
-	}
 	/* Additional initialization code if needed */
 	if (isatty(STDIN_FILENO))
 	{
@@ -35,31 +28,51 @@ void init_program(void)
  * Returns: Nothing
  *
  * Description: Splits an input line into tokens,
- * and executes the corresponding command.
+ *              and executes the corresponding command.
  */
-void split_input_line(char **env, char **argv,char *line, char *exe_name, int cycle_count, int *exit_status)
+void split_input_line(
+		char **env,
+		char **argv,
+		char *line,
+		char *exe_name,
+		int cycle_count,
+		int *exit_status)
 {
 	char **tokens;
 	int token_count;
 	char *exe_path;
+	int i;
 
 	memset(exe_name, 0, SIZE_TOKEN);
-	tokens = process_input(line, &token_count, exe_name, exit_status, cycle_count, argv);
+	tokens = process_input(line, &token_count, exe_name,
+				exit_status, cycle_count, argv);
 
 	if (token_count > 0 && tokens != NULL)
 	{
 		exe_path = find_executable(env, tokens[0], exe_name);
 		if (exe_path)
-			*exit_status = execute_command(exe_path, env, tokens, argv[0]);
+			*exit_status = execute_command(exe_path, env,
+					tokens, token_count, argv[0]);
 		else
 		{
 			if (isatty(STDIN_FILENO))
-			{	
-				fprintf(stderr, "%s: %d: %s: not found\n", argv[0], cycle_count, tokens[0]);
+			{
+				fprintf(stderr, "%s: %d: %s: not found\n",
+						argv[0], cycle_count, tokens[0]);
+
+				for (i = 0; i < token_count; i++)
+					free(tokens[i]);
+				free(tokens);
 			}
 			else
 			{
-				fprintf(stderr, "%s: %d: %s: not found\n", argv[0], cycle_count, tokens[0]);
+				fprintf(stderr, "%s: %d: %s: not found\n",
+						argv[0], cycle_count, tokens[0]);
+
+				for (i = 0; i < token_count; i++)
+					free(tokens[i]);
+				free(tokens);
+
 				exit(127);
 			}
 		}
@@ -74,77 +87,106 @@ void split_input_line(char **env, char **argv,char *line, char *exe_name, int cy
  * Returns: Nothing
  *
  * Description: Reads user input,
- * splits it into tokens,
- * and executes the corresponding command.
+ *              splits it into tokens,
+ *              and executes the corresponding command.
  */
 
 void handle_user_input(char **env, char **argv)
 {
-    char exe_name[SIZE_TOKEN];
-    int cycle_count = 1;
-    int in_double_quotes = 0;
-    char *multiline_buffer = NULL;
-    char input_char;
-    size_t buffer_size = SIZE_LINE;
-    size_t buffer_index = 0;
-    int *exit_status = (int *)malloc(sizeof(int));
+	char exe_name[SIZE_TOKEN];
+	int cycle_count = 1;
+	int in_double_quotes = 0;
+	int in_single_quotes = 0;
+	char *multiline_buffer = NULL;
+	char *line_buffer = NULL;
+	size_t buffer_size = SIZE_LINE;
+	size_t buffer_index = 0;
+	size_t line_buffer_size = SIZE_LINE;
+	ssize_t i;
 
-    multiline_buffer = (char *)malloc(buffer_size);
-    if (multiline_buffer == NULL) {
-        perror("Memory allocation failed");
-        exit(EXIT_FAILURE);
-    }
+	int *exit_status = (int *)malloc(sizeof(int));
 
-    while (1)
-    {
-        input_char = getchar();
+	multiline_buffer = (char *)malloc(buffer_size);
+	if (multiline_buffer == NULL)
+	{
+		perror("Memory allocation failed");
+		exit(EXIT_FAILURE);
+	}
 
-        if (input_char == EOF)
+	line_buffer = (char *)malloc(line_buffer_size);
+	if (line_buffer == NULL)
 	{
-            break;
-        }
-	else if (input_char == '"' && in_double_quotes == 0)
+		perror("Memory allocation failed");
+		exit(EXIT_FAILURE);
+	}
+
+	while (1)
 	{
-            in_double_quotes = 1;
-        } 
-	else if (input_char == '"' && in_double_quotes == 1)
-	{
-            in_double_quotes = 0;
-        }
-	else if (input_char == '\n' && in_double_quotes == 0)
-	{
-            multiline_buffer[buffer_index] = '\0';
-            split_input_line(env, argv, multiline_buffer, exe_name, cycle_count, exit_status);
-            buffer_index = 0;
-            cycle_count++;
-		if (isatty(STDIN_FILENO))
+		ssize_t read_chars = getline(&line_buffer, &line_buffer_size, stdin);
+
+		if (read_chars == -1)
+			break;
+
+		for (i = 0; i < read_chars; i++)
 		{
-			printf("$ ");
-			fflush(stdout);
+			char input_char = line_buffer[i];
+
+			if (input_char == '"' && in_double_quotes == 0 && !in_single_quotes)
+				in_double_quotes = 1;
+			else if (input_char == '"' && in_double_quotes == 1 && !in_single_quotes)
+				in_double_quotes = 0;
+			else if (input_char == '\'' && in_single_quotes == 0 && !in_double_quotes)
+				in_single_quotes = 1;
+			else if (input_char == '\'' && in_single_quotes == 1 && !in_double_quotes)
+				in_single_quotes = 0;
+			else if (input_char == '\n' && !in_double_quotes && !in_single_quotes)
+			{
+				multiline_buffer[buffer_index] = '\0';
+				split_input_line(env, argv, multiline_buffer,
+								 exe_name, cycle_count, exit_status);
+				buffer_index = 0;
+				cycle_count++;
+
+				if (isatty(STDIN_FILENO))
+				{
+					printf("$ ");
+					fflush(stdout);
+				}
+			}
+			else
+			{
+				multiline_buffer[buffer_index] = input_char;
+				buffer_index++;
+
+				if (buffer_index >= buffer_size)
+				{
+					buffer_size *= 2;
+					multiline_buffer = realloc(multiline_buffer, buffer_size);
+					if (multiline_buffer == NULL)
+					{
+						perror("Memory allocation failed");
+						exit(EXIT_FAILURE);
+					}
+				}
+			}
+			if (input_char == '\n' && (in_double_quotes || in_single_quotes))
+			{
+				if (isatty(STDIN_FILENO))
+				{
+					printf("> ");
+					fflush(stdout);
+				}
+			}
 		}
-        }
-	else
-	{
-            multiline_buffer[buffer_index] = input_char;
-            buffer_index++;
+	}
 
-            if (buffer_index >= buffer_size) {
-
-                buffer_size *= 2;
-                multiline_buffer = realloc(multiline_buffer, buffer_size);
-                if (multiline_buffer == NULL) {
-                    perror("Memory allocation failed");
-                    exit(EXIT_FAILURE);
-                }
-            }
-        }
-    }
-
-    free(multiline_buffer);
+	free(exit_status);
+	free(multiline_buffer);
+	free(line_buffer);
 }
 
 /**
- * main -Entry point of the program
+ * main - Entry point of the program
  * @argc: The number of command-line arguments
  * @argv: An array containing the command-line arguments
  * @env: The environment variables
@@ -152,7 +194,7 @@ void handle_user_input(char **env, char **argv)
  * Return: (0) Always 0
  *
  * Description: The main entry point of the program.
- * Initializes the program and handles user input.
+ *              Initializes the program and handles user input.
  */
 int main(int argc, char **argv, char **env)
 {
@@ -163,4 +205,3 @@ int main(int argc, char **argv, char **env)
 
 	return (EXIT_SUCCESS);
 }
-

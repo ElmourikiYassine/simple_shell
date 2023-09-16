@@ -1,30 +1,29 @@
 #include "main.h"
 
 /**
- * find_executable - Find the full path
- * of an executable in the PATH environment
- * @env: The environment variables
- * @file_path: The name of the executable file
- * @exe_name: The name of the executable
+ * find_executable - Find the full path of
+ * an executable in the PATH environment.
  *
- * Return: (char *) The full path of the executable if found, NULL otherwise
+ * @env: The environment variables.
+ * @file_path: The name of the executable file.
+ * @exe_name: The name of the executable.
+ *
+ * Return: (char *) The full path of the executable if found, NULL otherwise.
  */
 char *find_executable(char **env, char *file_path, char *exe_name)
 {
-        char *exe_path;
-        char *paths;
-        char *path_parsed;
-        char path_parsed_cat[SIZE_PATH];
-        char *paths_copy;
-        struct stat file_stat;
+	char *exe_path;
+	char *paths;
+	char *path_parsed;
+	char path_parsed_cat[SIZE_PATH];
+	char *paths_copy;
+	struct stat file_stat;
 
-        exe_path = (char *)malloc(sizeof(char) * SIZE_PATH);
-        paths = get_PATH(env);
+	exe_path = (char *)malloc(sizeof(char) * SIZE_PATH);
+	paths = get_PATH(env);
 
-
-        if (stat(file_path, &file_stat) == 0)
-                return (file_path);
-
+	if (stat(file_path, &file_stat) == 0 && strchr(file_path, '/'))
+		return (file_path);
 
 	if (paths != NULL)
 	{
@@ -47,15 +46,18 @@ char *find_executable(char **env, char *file_path, char *exe_name)
 			path_parsed = strtok(NULL, ":");
 		}
 	}
-        free(paths_copy);
-        return (NULL);
+	if (exe_path != NULL)
+		free(exe_path);
+	free(paths_copy);
+	return (NULL);
 }
 
 /**
- * get_PATH - Get the value of the PATH environment variable
- * @env: The environment variables
+ * get_PATH - Get the value of the PATH environment variable.
  *
- * Return: (char *) The value of the PATH variable if found, NULL otherwise
+ * @env: The environment variables.
+ *
+ * Return: (char *) The value of the PATH variable if found, NULL otherwise.
  */
 char *get_PATH(char **env)
 {
@@ -71,3 +73,4 @@ char *get_PATH(char **env)
 	}
 	return (NULL);
 }
+
