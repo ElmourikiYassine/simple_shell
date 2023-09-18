@@ -22,41 +22,40 @@ char *find_executable(char **env, char *file_path, char *exe_name)
 	exe_path = (char *)malloc(sizeof(char) * SIZE_PATH);
 	paths = get_PATH(env);
 
-	if (stat(file_path, &file_stat) == 0 && strchr(file_path, '/'))
+	if (stat(file_path, &file_stat) == 0 && _strchr(file_path, '/'))
 		return (file_path);
 
 	if (paths != NULL)
 	{
-		paths_copy = strdup(paths);
-		path_parsed = strtok(paths_copy, ":");
+		paths_copy = _strdup(paths);
+		path_parsed = _strtok(paths_copy, ":");
 
 		while (path_parsed != NULL)
 		{
-			strcpy(path_parsed_cat, path_parsed);
-			strcat(path_parsed_cat, "/");
-			strcat(path_parsed_cat, exe_name);
+			_strcpy(path_parsed_cat, path_parsed);
+			_strcat(path_parsed_cat, "/");
+			_strcat(path_parsed_cat, exe_name);
 
 			if (stat(path_parsed_cat, &file_stat) == 0)
 			{
-				strcpy(exe_path, path_parsed_cat);
+				_strcpy(exe_path, path_parsed_cat);
 				free(paths_copy);
 				return (exe_path);
 			}
 
-			path_parsed = strtok(NULL, ":");
+			path_parsed = _strtok(NULL, ":");
 		}
 	}
 	if (exe_path != NULL)
 		free(exe_path);
+
 	free(paths_copy);
 	return (NULL);
 }
 
 /**
  * get_PATH - Get the value of the PATH environment variable.
- *
  * @env: The environment variables.
- *
  * Return: (char *) The value of the PATH variable if found, NULL otherwise.
  */
 char *get_PATH(char **env)
@@ -67,7 +66,7 @@ char *get_PATH(char **env)
 	{
 		char *envVar = env[i];
 
-		if (strstr(envVar, "PATH=") == envVar)
+		if (_strstr(envVar, "PATH=") == envVar)
 			return (envVar + 5);
 		i++;
 	}

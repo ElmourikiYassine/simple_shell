@@ -27,7 +27,7 @@ int handle_build_in_commmand(char **tokens, int *exit_status,
 
 	while (cmds[i].func != NULL)
 	{
-		if (strcmp(name_built_in, cmds[i].name) == 0)
+		if (_strcmp(name_built_in, cmds[i].name) == 0)
 		{
 			cmds[i].func(tokens, exit_status, cycle_count, argv);
 			return (1);

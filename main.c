@@ -24,7 +24,7 @@ void init_program(void)
  * @line: The input line
  * @exe_name: The name of the executable
  * @cycle_count: The current cycle count
- *
+ * @exit_status: A pointer to the exit status.
  * Returns: Nothing
  *
  * Description: Splits an input line into tokens,
