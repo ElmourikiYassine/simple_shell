@@ -67,4 +67,11 @@ int _atoi(const char *s);
 char *_strpbrk(const char *str, const char *accept);
 char *_strtok(char *str, const char *delim);
 
+
+
+void *_memset(void *s, int c, size_t n);
+void *memcpy(void *dest, const void *src, size_t count);
+void *_realloc(void *ptr, size_t size);
+void concatenate_error_message(char *error_message, const char *program_name,
+	int cycle_count, const char *command);
 #endif

@@ -10,7 +10,7 @@ void signal_handler(int signum)
 {
 	(void) signum;
 
-	printf("\n$ ");
+	write(STDERR_FILENO, "\n$ ", 3);
 	fflush(stdout);
 }
 

@@ -1,6 +1,21 @@
 #include "main.h"
 
 /**
+ * print_prompt - Print a prompt if STDIN is a terminal
+ * @str: Prompt string
+ *
+ * Return: None
+ */
+void print_prompt(char *str)
+{
+	if (isatty(STDIN_FILENO))
+	{
+		write(STDIN_FILENO, str, 2);
+		fflush(stdout);
+	}
+}
+
+/**
  * init_program - Function to handle program initialization
  * Returns: Nothing
  * Description: Performs any necessary initialization for the program,
@@ -10,11 +25,7 @@ void init_program(void)
 {
 	signal(SIGINT, signal_handler);
 	/* Additional initialization code if needed */
-	if (isatty(STDIN_FILENO))
-	{
-		printf("$ ");
-		fflush(stdout);
-	}
+	print_prompt("$ ");
 }
 
 /**
@@ -42,8 +53,9 @@ void split_input_line(
 	int token_count;
 	char *exe_path;
 	int i;
+	char *err_msg = (char *)malloc(SIZE_LINE);
 
-	memset(exe_name, 0, SIZE_TOKEN);
+	_memset(exe_name, 0, SIZE_TOKEN);
 	tokens = process_input(line, &token_count, exe_name,
 				exit_status, cycle_count, argv);
 
@@ -55,26 +67,14 @@ void split_input_line(
 					tokens, token_count, argv[0]);
 		else
 		{
-			if (isatty(STDIN_FILENO))
-			{
-				fprintf(stderr, "%s: %d: %s: not found\n",
-						argv[0], cycle_count, tokens[0]);
-
-				for (i = 0; i < token_count; i++)
-					free(tokens[i]);
-				free(tokens);
-			}
-			else
-			{
-				fprintf(stderr, "%s: %d: %s: not found\n",
-						argv[0], cycle_count, tokens[0]);
-
-				for (i = 0; i < token_count; i++)
-					free(tokens[i]);
-				free(tokens);
-
+			concatenate_error_message(err_msg, argv[0],
+					cycle_count, tokens[0]);
+			write(STDERR_FILENO, err_msg, _strlen(err_msg));
+			for (i = 0; i < token_count; i++)
+				free(tokens[i]);
+			free(tokens);
+			if (!isatty(STDIN_FILENO))
 				exit(127);
-			}
 		}
 	}
 }
@@ -147,11 +147,7 @@ void handle_user_input(char **env, char **argv)
 				buffer_index = 0;
 				cycle_count++;
 
-				if (isatty(STDIN_FILENO))
-				{
-					printf("$ ");
-					fflush(stdout);
-				}
+				print_prompt("$ ");
 			}
 			else
 			{
@@ -161,7 +157,7 @@ void handle_user_input(char **env, char **argv)
 				if (buffer_index >= buffer_size)
 				{
 					buffer_size *= 2;
-					multiline_buffer = realloc(multiline_buffer, buffer_size);
+					multiline_buffer = _realloc(multiline_buffer, buffer_size);
 					if (multiline_buffer == NULL)
 					{
 						perror("Memory allocation failed");
@@ -170,13 +166,7 @@ void handle_user_input(char **env, char **argv)
 				}
 			}
 			if (input_char == '\n' && (in_double_quotes || in_single_quotes))
-			{
-				if (isatty(STDIN_FILENO))
-				{
-					printf("> ");
-					fflush(stdout);
-				}
-			}
+				print_prompt("> ");
 		}
 	}
 
@@ -184,7 +174,6 @@ void handle_user_input(char **env, char **argv)
 	free(multiline_buffer);
 	free(line_buffer);
 }
-
 /**
  * main - Entry point of the program
  * @argc: The number of command-line arguments
