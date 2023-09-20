@@ -51,9 +51,8 @@ int handle_env_command(char **tokens,
 		char **argv);
 
 char *get_PATH(char **env);
-char *find_executable(char **env,
-		char *file_path,
-		char *exe_name);
+char *find_executable(char **env, char *file_path,
+		char *exe_name, char *exe_path);
 
 void signal_handler(int signum);
 int _strlen(const char *s);
@@ -74,4 +73,6 @@ void *memcpy(void *dest, const void *src, size_t count);
 void *_realloc(void *ptr, size_t size);
 void concatenate_error_message(char *error_message, const char *program_name,
 	int cycle_count, const char *command);
+void free_tokens(char **tokens);
+int count_tokens(char **tokens);
 #endif

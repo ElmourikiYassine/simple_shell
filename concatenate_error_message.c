@@ -38,8 +38,7 @@ void concatenate_error_message(char *error_message, const char *program_name,
 
 	error_message[len++] = ':';
 	error_message[len++] = ' ';
-
-	while (*command != '\0')
+ 	while (*command != '\0')
 		error_message[len++] = *command++;
 
 	while (*not_found_msg != '\0')

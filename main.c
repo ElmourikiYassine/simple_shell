@@ -54,16 +54,20 @@ void split_input_line(
 	char *exe_path;
 	char *err_msg = (char *)malloc(SIZE_LINE);
 
+	exe_path = (char *)malloc(sizeof(char) * SIZE_PATH);
+
 	_memset(exe_name, 0, SIZE_TOKEN);
 	tokens = process_input(line, &token_count, exe_name,
 				exit_status, cycle_count, argv);
 
 	if (token_count > 0 && tokens != NULL)
 	{
-		exe_path = find_executable(env, tokens[0], exe_name);
-		if (exe_path)
+		find_executable(env, tokens[0], exe_name, exe_path);
+		if (_strchr(exe_path, '/'))
+		{
 			*exit_status = execute_command(exe_path, env,
 					tokens, token_count, argv[0]);
+		}
 		else
 		{
 			concatenate_error_message(err_msg, argv[0],
@@ -73,16 +77,9 @@ void split_input_line(
 			if (!isatty(STDIN_FILENO))
 				exit(127);
 		}
-		free(exe_path);
-	}
-	else
-	{
-		/* free here */
-		free(err_msg);
-		free_tokens(tokens);
 	}
 	free(err_msg);
-	free_tokens(tokens);
+	free(exe_path);
 }
 
 /**
@@ -126,7 +123,6 @@ void handle_user_input(char **env, char **argv)
 		perror("Memory allocation failed");
 		exit(EXIT_FAILURE);
 	}
-
 	while (1)
 	{
 		ssize_t read_chars = getline(&line_buffer, &line_buffer_size, stdin);
@@ -175,12 +171,12 @@ void handle_user_input(char **env, char **argv)
 			if (input_char == '\n' && (in_double_quotes || in_single_quotes))
 				print_prompt("> ");
 		}
-		free(line_buffer);
 	}
-	free(exit_status);
+	free(line_buffer);
 	free(multiline_buffer);
-	/* free here */
+	free(exit_status);
 }
+
 /**
  * main - Entry point of the program
  * @argc: The number of command-line arguments

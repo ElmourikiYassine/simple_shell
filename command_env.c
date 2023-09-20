@@ -21,6 +21,7 @@ int handle_env_command(char **tokens, int *exit_status,
 	(void)cycle_count;
 	(void)argv;
 
+
 	while (environ[i])
 	{
 		write(STDOUT_FILENO, environ[i], _strlen(environ[i]));

@@ -10,20 +10,19 @@
  *
  * Return: (char *) The full path of the executable if found, NULL otherwise.
  */
-char *find_executable(char **env, char *file_path, char *exe_name)
+char *find_executable(char **env, char *file_path,
+		char *exe_name, char *exe_path)
 {
-	char *exe_path;
 	char *paths;
 	char *path_parsed;
 	char path_parsed_cat[SIZE_PATH];
 	char *paths_copy;
 	struct stat file_stat;
 
-	exe_path = (char *)malloc(sizeof(char) * SIZE_PATH);
 	paths = get_PATH(env);
 
 	if (stat(file_path, &file_stat) == 0 && _strchr(file_path, '/'))
-		return (file_path);
+		_strcpy(exe_path, file_path);
 
 	if (paths != NULL)
 	{
@@ -39,15 +38,10 @@ char *find_executable(char **env, char *file_path, char *exe_name)
 			if (stat(path_parsed_cat, &file_stat) == 0)
 			{
 				_strcpy(exe_path, path_parsed_cat);
-				free(paths_copy);
-				return (exe_path);
 			}
 			path_parsed = _strtok(NULL, ":");
 		}
 	}
-	if (exe_path != NULL)
-		free(exe_path);
-
 	free(paths_copy);
 	return (NULL);
 }

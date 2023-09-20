@@ -32,6 +32,7 @@ int execute_command(char *exe_path, char **env, char **tokens,
 		if (execve(exe_path, tokens, env) == -1)
 		{
 			perror(shell_name);
+			_exit(errno);
 		}
 		for (i = 0; i < token_count; i++)
 			free(tokens[i]);
@@ -40,6 +41,7 @@ int execute_command(char *exe_path, char **env, char **tokens,
 	else
 	{
 		/* Parent process */
+		free_tokens(tokens);
 		waitpid(child_pid, &wstatus, WCONTINUED);
 		if (WIFEXITED(wstatus))
 		{

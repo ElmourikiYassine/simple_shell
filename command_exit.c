@@ -71,13 +71,13 @@ int handle_exit_command(char **tokens, int *exit_status,
 			concatenate_exit_message(error_message, argv[0],
 				cycle_count, tokens[1]);
 			write(STDERR_FILENO, error_message, _strlen(error_message));
-			exit(2);
+			_exit(2);
 		}
 		else
-			exit(_atoi(tokens[1]));
+			_exit(_atoi(tokens[1]));
 	}
 	else
-		exit(*exit_status);
+		_exit(*exit_status);
 
 	return (0);
 }
