@@ -17,16 +17,16 @@ void *_realloc(void *ptr, size_t size)
 	if (size == 0)
 	{
 		free(ptr);
-		return NULL;
+		return (NULL);
 	}
 
 	if (ptr == NULL)
-		return malloc(size);
+		return (malloc(size));
 
 	new_ptr = malloc(size);
 
 	if (new_ptr == NULL)
-		return NULL;
+		return (NULL);
 
 	copy_size = size;
 

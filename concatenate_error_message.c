@@ -18,13 +18,14 @@ void concatenate_error_message(char *error_message, const char *program_name,
 	int cycle_digits = 1;
 	const char *not_found_msg = ": not found\n";
 
-	while (*program_name != '\0') {
+	while (*program_name != '\0')
 		error_message[len++] = *program_name++;
-	}
+
 	error_message[len++] = ':';
 	error_message[len++] = ' ';
 
-	while (cycle / 10 > 0) {
+	while (cycle / 10 > 0)
+	{
 		cycle_digits++;
 		cycle /= 10;
 	}

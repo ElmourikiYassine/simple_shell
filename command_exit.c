@@ -18,14 +18,14 @@ void concatenate_exit_message(char *error_message, const char *program_name,
 	int cycle_digits = 1;
 	const char *not_found_msg = "exit: Illegal number: ";
 
-	while (*program_name != '\0') {
+	while (*program_name != '\0')
 		error_message[len++] = *program_name++;
-	}
 	error_message[len++] = ':';
 	error_message[len++] = ' ';
 
 	while (cycle / 10 > 0)
 	{
+
 		cycle_digits++;
 		cycle /= 10;
 	}
@@ -62,7 +62,7 @@ void concatenate_exit_message(char *error_message, const char *program_name,
 int handle_exit_command(char **tokens, int *exit_status,
 			int cycle_count, char **argv)
 {
-	char *error_message = malloc(sizeof(char) * SIZE_LINE); 
+	char *error_message = malloc(sizeof(char) * SIZE_LINE);
 
 	if (tokens[1] != NULL)
 	{
