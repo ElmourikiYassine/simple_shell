@@ -32,9 +32,7 @@ int execute_command(char *exe_path, char **env, char **tokens,
 		if (execve(exe_path, tokens, env) == -1)
 		{
 			perror(shell_name);
-			_exit(errno);
 		}
-
 		for (i = 0; i < token_count; i++)
 			free(tokens[i]);
 		free(tokens);

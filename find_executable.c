@@ -42,7 +42,6 @@ char *find_executable(char **env, char *file_path, char *exe_name)
 				free(paths_copy);
 				return (exe_path);
 			}
-
 			path_parsed = _strtok(NULL, ":");
 		}
 	}

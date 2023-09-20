@@ -33,9 +33,11 @@ char *_strdup(const char *str)
 		return (NULL);
 	length = _strlen(str);
 	duplicate = (char *)malloc(length + 1);
+
 	if (duplicate == NULL)
 		return (NULL);
 	_strcpy(duplicate, str);
+
 	return (duplicate);
 }
 

@@ -52,7 +52,6 @@ void split_input_line(
 	char **tokens;
 	int token_count;
 	char *exe_path;
-	int i;
 	char *err_msg = (char *)malloc(SIZE_LINE);
 
 	_memset(exe_name, 0, SIZE_TOKEN);
@@ -70,13 +69,20 @@ void split_input_line(
 			concatenate_error_message(err_msg, argv[0],
 					cycle_count, tokens[0]);
 			write(STDERR_FILENO, err_msg, _strlen(err_msg));
-			for (i = 0; i < token_count; i++)
-				free(tokens[i]);
-			free(tokens);
+
 			if (!isatty(STDIN_FILENO))
 				exit(127);
 		}
+		free(exe_path);
 	}
+	else
+	{
+		/* free here */
+		free(err_msg);
+		free_tokens(tokens);
+	}
+	free(err_msg);
+	free_tokens(tokens);
 }
 
 /**
@@ -107,6 +113,7 @@ void handle_user_input(char **env, char **argv)
 	int *exit_status = (int *)malloc(sizeof(int));
 
 	multiline_buffer = (char *)malloc(buffer_size);
+
 	if (multiline_buffer == NULL)
 	{
 		perror("Memory allocation failed");
@@ -168,11 +175,11 @@ void handle_user_input(char **env, char **argv)
 			if (input_char == '\n' && (in_double_quotes || in_single_quotes))
 				print_prompt("> ");
 		}
+		free(line_buffer);
 	}
-
 	free(exit_status);
 	free(multiline_buffer);
-	free(line_buffer);
+	/* free here */
 }
 /**
  * main - Entry point of the program

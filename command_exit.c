@@ -71,7 +71,6 @@ int handle_exit_command(char **tokens, int *exit_status,
 			concatenate_exit_message(error_message, argv[0],
 				cycle_count, tokens[1]);
 			write(STDERR_FILENO, error_message, _strlen(error_message));
-			free(error_message);
 			exit(2);
 		}
 		else
@@ -79,6 +78,7 @@ int handle_exit_command(char **tokens, int *exit_status,
 	}
 	else
 		exit(*exit_status);
+
 	return (0);
 }
 

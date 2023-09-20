@@ -28,13 +28,12 @@ char **process_input(char *line, int *token_count, char *exe_name,
 	is_built_in_command = handle_build_in_commmand(tokens, exit_status,
 							cycle_count, argv);
 	if (is_built_in_command)
-	{
-		free_tokens(tokens);
 		return (NULL);
-	}
+
 	else
 		return (tokens);
 }
+
 /**
  * split_line - Split a string into tokens.
  * @line: the string to be split.
@@ -77,33 +76,3 @@ char **split_line(char *line)
 	return (tokens);
 }
 
-
-/**
- * count_tokens - Count the number of tokens in an array.
- * @tokens: The array of tokens.
- * Return: The number of tokens in the array.
-*/
-int count_tokens(char **tokens)
-{
-	int token_count = 0;
-
-	while (tokens[token_count] != NULL)
-	token_count++;
-
-	return (token_count);
-}
-
-/**
- * free_tokens - Free an array of tokesn.
- * @tokens: The array of tokens to be freed.
-*/
-void free_tokens(char **tokens)
-{
-	int i;
-	int token_count = count_tokens(tokens);
-
-	for (i = 0; i < token_count; i++)
-	free(tokens[i]);
-
-	free(tokens);
-}
