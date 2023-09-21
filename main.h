@@ -15,6 +15,11 @@
 #define SIZE_PATH 1024
 
 extern char **environ;
+/**
+ * struct built_in_cmd - build_in_cmd class
+ * @name: the name of the build-in command
+ * @func: a pointer to the function that handles the commaand.
+*/
 typedef struct built_in_cmd
 {
 	char *name;
@@ -22,17 +27,18 @@ typedef struct built_in_cmd
 
 } built_in_cmd;
 
-char **process_input(char *line,
+void process_input(char *line,
 		int *token_count,
 		char *exe_name,
 		int *exit_status,
 		int cycle_count,
-		char **argv);
+		char **argv,
+		char **tokens,
+		int *is_built_in);
 
 int execute_command(char *exe_path,
 		char **env,
 		char **tokens,
-		int token_count,
 		char *shell_name);
 
 int handle_build_in_commmand(char **tokens,
@@ -65,6 +71,7 @@ char *_strdup(const char *str);
 int _atoi(const char *s);
 char *_strpbrk(const char *str, const char *accept);
 char *_strtok(char *str, const char *delim);
+int _getline(void);
 
 
 

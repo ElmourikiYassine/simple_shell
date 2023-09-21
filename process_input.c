@@ -2,12 +2,14 @@
 
 /**
  * split_line - Split a string into tokens.
+ *
  * @line: the string to be split.
+ * @tokens: the tokens.
+ *
  * Return: An array of tokens.
 */
-char **split_line(char *line)
+char **split_line(char *line, char **tokens)
 {
-	char **tokens = (char **)malloc(sizeof(char *) * SIZE_TOKEN);
 	char *token;
 	char *rest = line;
 	int token_count = 0;
@@ -47,29 +49,26 @@ char **split_line(char *line)
  * @token_count: A pointer to an integer that will hold the number of tokens.
  * @exe_name: A buffer to store the executable name.
  * @exit_status: A pointer to the exit status.
+ * @tokens: the tokens.
  * @cycle_count: The cycle count.
  * @argv: Pointer to the command arguments.
+ * @is_built_in: boolean.
  * Return: (char **) An array of tokens.
  */
-char **process_input(char *line, int *token_count, char *exe_name,
-	int *exit_status, int cycle_count, char **argv)
+
+void process_input(char *line, int *token_count, char *exe_name,
+	int *exit_status, int cycle_count, char **argv, char **tokens,
+	int *is_built_in)
 {
 
-	int is_built_in_command = 0;
-	char **tokens = split_line(line);
+	split_line(line, tokens);
 
 	*token_count = count_tokens(tokens);
 
 	if (*token_count > 0)
 		_strcpy(exe_name, tokens[0]);
 
-
-	is_built_in_command = handle_build_in_commmand(tokens, exit_status,
-							cycle_count, argv);
-	if (is_built_in_command)
-		return (NULL);
-
-	else
-		return (tokens);
+	*is_built_in = handle_build_in_commmand(tokens,
+			exit_status, cycle_count, argv);
 }
 

@@ -22,10 +22,10 @@ int count_tokens(char **tokens)
 void free_tokens(char **tokens)
 {
 	int i;
-	int token_count = count_tokens(tokens);
 
-	for (i = 0; i < token_count; i++)
+	if (tokens == NULL)
+		return;
+
+	for (i = 0; tokens[i] != NULL; i++)
 		free(tokens[i]);
-
-	free(tokens);
 }

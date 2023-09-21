@@ -6,6 +6,7 @@
  *
  * @env: The environment variables.
  * @file_path: The name of the executable file.
+ * @exe_path: The executable file.
  * @exe_name: The name of the executable.
  *
  * Return: (char *) The full path of the executable if found, NULL otherwise.
@@ -22,9 +23,12 @@ char *find_executable(char **env, char *file_path,
 	paths = get_PATH(env);
 
 	if (stat(file_path, &file_stat) == 0 && _strchr(file_path, '/'))
+	{
 		_strcpy(exe_path, file_path);
+		return (exe_path);
+	}
 
-	if (paths != NULL)
+	else if (paths != NULL)
 	{
 		paths_copy = _strdup(paths);
 		path_parsed = _strtok(paths_copy, ":");
@@ -38,6 +42,8 @@ char *find_executable(char **env, char *file_path,
 			if (stat(path_parsed_cat, &file_stat) == 0)
 			{
 				_strcpy(exe_path, path_parsed_cat);
+				free(paths_copy);
+				return (exe_path);
 			}
 			path_parsed = _strtok(NULL, ":");
 		}
