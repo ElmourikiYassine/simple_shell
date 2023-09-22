@@ -68,8 +68,7 @@ void split_input_line(char **env, char **argv,
 
 		}
 	}
-	if (exe_path)
-		free(exe_path);
+	free(exe_path);
 	free_tokens(tokens);
 	free(tokens);
 	free(err_msg);
@@ -95,6 +94,7 @@ void handle_user_input(char **env, char **argv)
 	int *exit_status = (int *)malloc(sizeof(int));
 
 	multiline_buffer = (char *)malloc(buffer_size);
+	*exit_status = 0;
 	while (1)
 	{
 		input_char = _getline();

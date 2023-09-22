@@ -64,20 +64,42 @@ int handle_exit_command(char **tokens, int *exit_status,
 {
 	char *error_message = malloc(sizeof(char) * SIZE_LINE);
 
+	_memset(error_message, 0, sizeof(char) * SIZE_LINE);
+
 	if (tokens[1] != NULL)
 	{
-		if (atoi(tokens[1]) <= 0)
+		if (_atoi(tokens[1]) <= 0)
 		{
 			concatenate_exit_message(error_message, argv[0],
 				cycle_count, tokens[1]);
 			write(STDERR_FILENO, error_message, _strlen(error_message));
-			_exit(2);
+			free(error_message);
+			exit(2);
 		}
 		else
-			_exit(_atoi(tokens[1]));
+		{
+			char *tmp = malloc(SIZE_LINE);
+
+			_strcpy(tmp, tokens[1]);
+
+			free(exit_status);
+			free_tokens(tokens);
+			free(tokens);
+			free(error_message);
+			exit(_atoi(tmp));
+		}
 	}
 	else
-		_exit(*exit_status);
+	{
+		int tmp = *exit_status;
+
+		free_tokens(tokens);
+		free(tokens);
+		free(error_message);
+		free(exit_status);
+
+		exit(tmp);
+	}
 
 	return (0);
 }

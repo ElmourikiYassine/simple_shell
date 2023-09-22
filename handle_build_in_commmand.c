@@ -19,6 +19,9 @@ int handle_build_in_commmand(char **tokens, int *exit_status,
 	built_in_cmd cmds[] = {
 		{ "exit", handle_exit_command },
 		{ "env", handle_env_command },
+		{ "setenv", handle_setenv_command },
+		{ "unsetenv", handle_unsetenv_command },
+		{ "cd", handle_cd_command },
 		{ NULL, NULL }
 	};
 

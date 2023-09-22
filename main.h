@@ -12,7 +12,7 @@
 
 #define SIZE_TOKEN 90
 #define SIZE_LINE 1024
-#define SIZE_PATH 1024
+#define SIZE_PATH 1025
 
 extern char **environ;
 /**
@@ -56,10 +56,19 @@ int handle_env_command(char **tokens,
 		int cycle_count,
 		char **argv);
 
-char *get_PATH(char **env);
+int handle_setenv_command(char **tokens, int *exit_status,
+		int cycle_count, char **argv);
+
+int handle_unsetenv_command(char **tokens, int *exit_status,
+		int cycle_count, char **argv);
+
+int handle_cd_command(char **tokens, int *exit_status,
+		int cycle_count, char **argv);
+
 char *find_executable(char **env, char *file_path,
 		char *exe_name, char *exe_path);
 
+char *get_PATH(char **env);
 void signal_handler(int signum);
 int _strlen(const char *s);
 int _strcmp(const char *s1, const char *s2);
